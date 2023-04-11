@@ -1,0 +1,40 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+version: '3'
+
+#Define services
+services:
+  #PostgreSQL Database for the application
+  easy-postgres:
+    image: "postgres:14-alpine"
+    container_name: easy-postgres
+    #Volume mounted for database for the storage
+    volumes:
+      - easy-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432 # Forward the exposed port 5432 on the container to port 5432 on the host machine
+
+    #Environment variable for DB name, user and password
+    environment:
+      - POSTGRES_DB=easysender
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  #Back-end Spring Boot Application
+  easy:
+    #The docker file in easysender-app build the jar and provides the docker image with the following name.
+    build: ./easysender
+    container_name: easysender
+
+    #Environment variables for Spring Boot Application.
+    environment:
+      - DB_SERVER=easy-postgres
+    ports:
+      - 9024:9024 # Forward the exposed port 9024 on the container to port 9024 on the host machine
+    links:
+      - easy-postgres
+
+#Volumes for DB data
+volumes:
+  easy-data:
+
+
