@@ -2,19 +2,11 @@ package com.rh.easysender.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.PasswordAuthentication;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Properties;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.repository.query.Param;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,26 +16,21 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.rh.easysender.entity.*;
 import com.rh.easysender.repo.UserRepository;
 import com.rh.easysender.service.UserService;
 import com.rh.easysender.service.Utility;
-
 import net.bytebuddy.utility.RandomString;
 
 @Controller
 public class AuthController {
-	 @Autowired UserService userService;
-	  @Autowired
-	    private UserRepository userRepository;
+	
+	private final  UserService userService;
+
+	public AuthController( UserService userService) {
+	      this.userService = userService;
+	}
 	
 	@GetMapping("/login")
 	public String viewLoginPage() {
@@ -55,12 +42,12 @@ public class AuthController {
 	
 		) throws IOException {
 		
-		User useredit =userRepository.findById(user.getId()).get();
+		User useredit =userService.getUser(user.getId());
 		
 		useredit.setId(useredit.getId());
 		useredit.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 
-		   userRepository.save(useredit);
+		userService.SaveUser(useredit);
 		   
 		   return "redirect:/profiluser";
 	}

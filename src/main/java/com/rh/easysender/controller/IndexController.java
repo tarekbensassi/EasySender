@@ -56,16 +56,23 @@ import org.springframework.web.multipart.MultipartFile;
 import com.rh.easysender.entity.*;
 import com.rh.easysender.repo.ApplicationRepository;
 import com.rh.easysender.repo.ProfileRepository;
+import com.rh.easysender.service.UserService;
 
 @Controller
 public class IndexController {
 	
    private Logger logger = LoggerFactory.getLogger(IndexController.class);
 	
-	@Autowired
-	private ApplicationRepository ApplicationRepository;
-	@Autowired
-	private ProfileRepository ProfileRepository;
+
+    private final ApplicationRepository ApplicationRepository;
+	private final ProfileRepository ProfileRepository;
+	
+	public IndexController( 
+			  ApplicationRepository ApplicationRepository,
+			  ProfileRepository ProfileRepository ) {
+	      this.ApplicationRepository = ApplicationRepository;
+	      this.ProfileRepository = ProfileRepository;
+	}
 	
 	@GetMapping("/compose")
 	public String viewComposePage(Model model,	@RequestParam("id") Long id) {

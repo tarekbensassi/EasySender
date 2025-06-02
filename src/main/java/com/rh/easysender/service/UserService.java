@@ -39,6 +39,14 @@ public class UserService {
     public User getByResetPasswordToken(String token) {
         return UserRepo.findByResetPasswordToken(token);
     }
+    public User getUser(Long id) {
+    	
+		return UserRepo.findById(id).get();
+
+    }
+     public   void  SaveUser(User user) {
+		 UserRepo.save(user);
+    }
      
     public void updatePassword(User User, String newPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
